@@ -25,14 +25,6 @@ Add this to `app/config/app.php` under the 'providers' key:
 October\Rain\Config\ServiceProvider::class,
 ```
 
-### Lumen case
-
-Add this to `bootstrap/app.php` in the 'service providers' section declaration:
-
-```php
-$app->register(October\Rain\Config\ServiceProvider::class);
-```
-
 ## Usage
 
 You can write to config files like this:
