@@ -92,6 +92,7 @@ class Rewrite
         $patterns[] = $this->buildStringExpression($key, $items, '"');
         $patterns[] = $this->buildConstantExpression($key, $items);
         $patterns[] = $this->buildArrayExpression($key, $items);
+        $patterns[] = $this->buildEnvExpression($key, $items);
 
         foreach ($patterns as $pattern) {
             $result = preg_replace($pattern, '${1}${2}' . $replaceValue, $result, 1, $count);
@@ -160,6 +161,25 @@ class Rewrite
 
         // The target key closure
         $expression[] = '['.$quoteChar.']';
+
+        return '/' . implode('', $expression) . '/';
+    }
+    
+    protected function buildEnvExpression(string $targetKey, array $arrayItems = [], string $quoteChar = "'"): string
+    {
+        $expression = [];
+
+        // Opening expression for array items ($1)
+        $expression[] = $this->buildArrayOpeningExpression($arrayItems);
+
+        // The target key opening
+        $expression[] = '([\'|"]'.$targetKey.'[\'|"]\s*=>\s*)';
+
+        // The target value to be replaced ($2)
+        $expression[] = 'env\(.*\)';
+
+        // The target key closure
+        $expression[] = '(?=,)';
 
         return '/' . implode('', $expression) . '/';
     }
